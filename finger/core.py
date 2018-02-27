@@ -48,8 +48,15 @@ class FileWorker(object):
             os.mkdir(dst)
         copy2(src, dst)
 
+    def change_items_in_file(self, pattern, file):
+        rex_url = compile(r'http[s]?://[\d\w.]+')
+        with open(file) as r_file:
+            tmp_file = rex_url.sub(pattern, r_file.read())
+        with open(file, 'w') as w_file:
+            w_file.write(tmp_file)
 
 finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
 file_work = FileWorker('./')
 files = finder.search(argv[1], 'index.php', sort=True)
 file_work.copy_file(files[0], argv[2])
+file_work.change_items_in_file(argv[3], argv[2])
