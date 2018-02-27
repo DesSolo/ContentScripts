@@ -50,7 +50,7 @@ class FileWorker(object):
         copy2(src, dst)
 
     def change_items_in_file(self, pattern, file):
-        file = self.path + file + 'index.php'
+        file = self.path + file + '/' + 'index.php'
         rex_url = compile(r'http[s]?://[\d\w.]+')
         with open(file) as r_file:
             tmp_file = rex_url.sub(pattern, r_file.read())
