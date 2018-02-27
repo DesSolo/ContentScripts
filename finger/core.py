@@ -1,9 +1,11 @@
 import os
-from sys import argv
 import argparse
 from re import compile
 from shutil import copy2
+import configparser
 
+config = configparser.ConfigParser()
+config.read('config.conf')
 
 class Finder(object):
     def __init__(self, path):
@@ -42,20 +44,25 @@ class Finder(object):
 class FileWorker(object):
     def __init__(self, path):
         self.path = path if path[-1] == '/' else path + '/'
+        self.rex_url = compile(r'http[s]?://([-\d\w.]+)')
 
     def copy_file(self, src, dst):
-        dst = self.path + dst
-        if not os.path.exists(dst):
-            os.mkdir(dst)
-        copy2(src, dst)
+        if src:
+            dst = self.path + self.rex_url.search(dst).group(1)
+            if not os.path.exists(dst):
+                os.mkdir(dst)
+            copy2(src[0], dst)
+        else:
+            print('No files copy')
 
     def change_items_in_file(self, pattern):
         file = self.path + 'index.php'
-        rex_url = compile(r'http[s]?://[\d\w-.]+')
+        print(pattern)
         with open(file) as r_file:
-            tmp_file = rex_url.sub(pattern, r_file.read())
+            tmp_file = self.rex_url.sub(pattern, r_file.read())
         with open(file, 'w') as w_file:
             w_file.write(tmp_file)
+
 
 if __name__ == '__main__':
     argpars = argparse.ArgumentParser(prog='finger', usage='%(prog)s [options]', epilog='Finger parser half brain')
@@ -65,8 +72,8 @@ if __name__ == '__main__':
 
     args = vars(argpars.parse_args())
 
-    finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
+    finder = Finder(config.get('Main', 'path_files'))
     file_work = FileWorker(args.get('path'))
-    files = finder.search(args.get('rex'), 'index.php', sort=True)
-    file_work.copy_file(files[0], args.get('path'))
+    files = finder.search(args.get('rex'), config.get('Main', 'search_files'), sort=True)
+    file_work.copy_file(files, args.get('url'))
     file_work.change_items_in_file(args.get('url'))
