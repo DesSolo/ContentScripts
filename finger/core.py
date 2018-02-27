@@ -49,7 +49,7 @@ class FileWorker(object):
         copy2(src, dst)
 
 
-a = Finder('src-parsers')
-b = FileWorker('src-parsers')
-files = a.search(argv[1], 'php', sort=False)
-b.copy_file(files[0], argv[2])
+finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
+file_work = FileWorker('./')
+files = finder.search(argv[1], 'index.php', sort=False)
+file_work.copy_file(files[0], argv[2])
