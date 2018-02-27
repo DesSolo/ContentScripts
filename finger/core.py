@@ -57,13 +57,16 @@ class FileWorker(object):
         with open(file, 'w') as w_file:
             w_file.write(tmp_file)
 
-# argpars = argparse.ArgumentParser(prog='finger', usage='%(prog)s [options]', epilog='Finger parser half brain')
-# argpars.add_argument('-u', '--url', help='Url audiobook')
-# argpars.add_argument('-p', '--path', default='' ,help='Path to download')
-# argpars.add_argument('-t', '--threads', type=int, default=7, help='How many threads for downloading')
+if __name__ == '__main__':
+    argpars = argparse.ArgumentParser(prog='finger', usage='%(prog)s [options]', epilog='Finger parser half brain')
+    argpars.add_argument('-u', '--url', help='Url target site')
+    argpars.add_argument('-r', '--rex', default='', help='Regular expression pattern for search')
+    argpars.add_argument('-p', '--path', default='.', help='Path work')
 
-finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
-file_work = FileWorker('./')
-files = finder.search(argv[1], 'index.php', sort=True)
-file_work.copy_file(files[0], argv[2])
-file_work.change_items_in_file(argv[3], argv[2])
+    args = vars(argpars.parse_args())
+
+    finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
+    file_work = FileWorker(args.get('path'))
+    files = finder.search(args.get('rex'), 'index.php', sort=True)
+    file_work.copy_file(files[0], args.get('path'))
+    file_work.change_items_in_file(args.get('url'), args.get('path'))
