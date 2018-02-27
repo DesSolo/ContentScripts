@@ -51,5 +51,5 @@ class FileWorker(object):
 
 finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
 file_work = FileWorker('./')
-files = finder.search(argv[1], 'index.php', sort=False)
+files = finder.search(argv[1], 'index.php', sort=True)
 file_work.copy_file(files[0], argv[2])
