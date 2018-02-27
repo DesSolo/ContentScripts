@@ -45,19 +45,20 @@ class FileWorker(object):
     def __init__(self, path):
         self.path = path if path[-1] == '/' else path + '/'
         self.rex_url = compile(r'http[s]?://([-\d\w.]+)')
+        self.dst = self.path
 
     def copy_file(self, src, dst):
         if src:
-            dst = self.path + self.rex_url.search(dst).group(1)
+            self.dst = self.path + self.rex_url.search(dst).group(1)
             if not os.path.exists(dst):
                 os.mkdir(dst)
-            copy2(src[0], dst)
+            copy2(src[0], self.dst)
         else:
             print('No files copy')
 
     def change_items_in_file(self, pattern):
-        file = self.path + 'index.php'
-        print(pattern)
+        file = self.dst + 'index.php'
+        print(self.path)
         with open(file) as r_file:
             tmp_file = self.rex_url.sub(pattern, r_file.read())
         with open(file, 'w') as w_file:
