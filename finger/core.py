@@ -1,5 +1,6 @@
 import os
 from sys import argv
+import argparse
 from re import compile
 from shutil import copy2
 
@@ -49,11 +50,17 @@ class FileWorker(object):
         copy2(src, dst)
 
     def change_items_in_file(self, pattern, file):
+        file = self.path + file + 'index.php'
         rex_url = compile(r'http[s]?://[\d\w.]+')
         with open(file) as r_file:
             tmp_file = rex_url.sub(pattern, r_file.read())
         with open(file, 'w') as w_file:
             w_file.write(tmp_file)
+
+# argpars = argparse.ArgumentParser(prog='finger', usage='%(prog)s [options]', epilog='Finger parser half brain')
+# argpars.add_argument('-u', '--url', help='Url audiobook')
+# argpars.add_argument('-p', '--path', default='' ,help='Path to download')
+# argpars.add_argument('-t', '--threads', type=int, default=7, help='How many threads for downloading')
 
 finder = Finder('/home/dmitry/repo/parsers/src-parsers/www')
 file_work = FileWorker('./')
