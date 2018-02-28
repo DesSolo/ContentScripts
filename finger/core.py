@@ -75,6 +75,8 @@ class StarterPHP(object):
     def run(self, file):
         try:
             rez = Popen(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
+            if not rez.stdout.read() and not rez.stderr.read():
+                return True
             print('#' * 20)
             print('Stdout: ')
             print(rez.stdout.read().decode('utf-8'))
@@ -106,4 +108,5 @@ if __name__ == '__main__':
         file_work.copy_file(file, args.get('url'))
         current_file = file_work.change_items_in_file(args.get('url'))
         if current_file:
-            runner_php.run(current_file)
+            if runner_php.run(current_file):
+                print('Finished Success!!')
