@@ -74,7 +74,7 @@ class StarterPHP(object):
 
     def run(self, file):
         try:
-            rez = call(self.interpreter + ' ' + file, stdout=PIPE, stderr=PIPE)
+            rez = call(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
             print(rez)
         except Exception as ex:
             print(ex)
