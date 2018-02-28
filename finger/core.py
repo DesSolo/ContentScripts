@@ -3,9 +3,11 @@ import argparse
 from re import compile
 from shutil import copy2
 import configparser
+from subprocess import call, PIPE
 
 config = configparser.ConfigParser()
 config.read('config.conf')
+
 
 class Finder(object):
     def __init__(self, path):
@@ -50,19 +52,33 @@ class FileWorker(object):
     def copy_file(self, src, dst):
         if src:
             self.dst = self.path + self.rex_url.search(dst).group(1)
-            if not os.path.exists(dst):
-                os.mkdir(dst)
+            if not os.path.exists(self.dst):
+                os.mkdir(self.dst)
             copy2(src[0], self.dst)
         else:
             print('No files copy')
 
     def change_items_in_file(self, pattern):
-        file = self.dst + 'index.php'
-        print(self.path)
-        with open(file) as r_file:
-            tmp_file = self.rex_url.sub(pattern, r_file.read())
-        with open(file, 'w') as w_file:
-            w_file.write(tmp_file)
+        file = self.dst + '/' + 'index.php'
+        if os.path.isfile(file):
+            with open(file) as r_file:
+                tmp_file = self.rex_url.sub(pattern, r_file.read())
+            with open(file, 'w') as w_file:
+                w_file.write(tmp_file)
+            return file
+
+
+class StarterPHP(object):
+    def __init__(self):
+        self.interpreter = config.get('Main', 'interpreter')
+
+    def run(self, file):
+        try:
+            rez = call(self.interpreter + ' ' + file, stdout=PIPE, stderr=PIPE)
+            print(rez)
+        except Exception as ex:
+            print(ex)
+            print('Error run script')
 
 
 if __name__ == '__main__':
@@ -74,7 +90,10 @@ if __name__ == '__main__':
     args = vars(argpars.parse_args())
 
     finder = Finder(config.get('Main', 'path_files'))
+    runner_php = StarterPHP()
     file_work = FileWorker(args.get('path'))
     files = finder.search(args.get('rex'), config.get('Main', 'search_files'), sort=True)
     file_work.copy_file(files, args.get('url'))
-    file_work.change_items_in_file(args.get('url'))
+    current_file = file_work.change_items_in_file(args.get('url'))
+    if current_file:
+        runner_php.run(current_file)
