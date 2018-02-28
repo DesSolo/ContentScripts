@@ -99,7 +99,7 @@ if __name__ == '__main__':
         current_file = file_work.change_items_in_file(args.get('url'))
         if current_file:
             if runner_php.run(current_file):
-                print('Finished Success!!')
+                print('Finished Success!')
                 break
             else:
                 print('No profit...')
