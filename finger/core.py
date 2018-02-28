@@ -56,7 +56,7 @@ class FileWorker(object):
                 os.mkdir(self.dst)
             copy2(src, self.dst)
         else:
-            print('No files copy')
+            print('No files to copy')
 
     def change_items_in_file(self, pattern):
         file = self.dst + '/' + 'index.php'
