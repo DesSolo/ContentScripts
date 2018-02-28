@@ -54,7 +54,7 @@ class FileWorker(object):
             self.dst = self.path + self.rex_url.search(dst).group(1)
             if not os.path.exists(self.dst):
                 os.mkdir(self.dst)
-            copy2(src[0], self.dst)
+            copy2(src, self.dst)
         else:
             print('No files copy')
 
@@ -96,7 +96,8 @@ if __name__ == '__main__':
     runner_php = StarterPHP()
     file_work = FileWorker(args.get('path'))
     files = finder.search(args.get('rex'), config.get('Main', 'search_files'), sort=True)
-    file_work.copy_file(files, args.get('url'))
-    current_file = file_work.change_items_in_file(args.get('url'))
-    if current_file:
-        runner_php.run(current_file)
+    for file in files:
+        file_work.copy_file(file, args.get('url'))
+        current_file = file_work.change_items_in_file(args.get('url'))
+        if current_file:
+            runner_php.run(current_file)
