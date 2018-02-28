@@ -3,7 +3,7 @@ import argparse
 from re import compile
 from shutil import copy2
 import configparser
-from subprocess import call, PIPE
+from subprocess import Popen, PIPE
 
 config = configparser.ConfigParser()
 config.read('config.conf')
@@ -74,11 +74,17 @@ class StarterPHP(object):
 
     def run(self, file):
         try:
-            rez = call(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
-            if rez is 0:
-                print("Finished - Success")
-            else:
-                print("Finished - Error status code: " + str(rez))
+            rez = Popen(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
+            print('#' * 20)
+            print('Stdout: ')
+            print(rez.stdout.read().encode('utf-8'))
+            print('Std Error: ')
+            print(rez.stderr.read().encode('utf-8'))
+            print('#'*20)
+            # if rez is 0:
+            #     print("Finished - Success")
+            # else:
+            #     print("Finished - Error status code: " + str(rez))
         except Exception as ex:
             print(ex)
             print('Error run script')
