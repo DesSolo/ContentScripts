@@ -77,13 +77,13 @@ class StarterPHP(object):
             rez = Popen(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
             if not rez.stdout.read() and not rez.stderr.read():
                 return True
-            print('#' * 20)
-            print('Stdout: ')
-            print(rez.stdout.read().decode('utf-8'))
-            print('Std Error: ')
-            print(rez.stderr.read().decode('utf-8'))
-            print('#'*20)
-            # if rez is 0:
+            # print('#' * 20)
+            # print('Stdout: ')
+            # print(rez.stdout.read().decode('utf-8'))
+            # print('Std Error: ')
+            # print(rez.stderr.read().decode('utf-8'))
+            # print('#'*20)
+            # # if rez is 0:
             #     print("Finished - Success")
             # else:
             #     print("Finished - Error status code: " + str(rez))
@@ -110,3 +110,5 @@ if __name__ == '__main__':
         if current_file:
             if runner_php.run(current_file):
                 print('Finished Success!!')
+            else:
+                print('No profit...')
