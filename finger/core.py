@@ -75,7 +75,10 @@ class StarterPHP(object):
     def run(self, file):
         try:
             rez = call(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
-            print(rez)
+            if rez is 0:
+                print("Finished - Success")
+            else:
+                print("Finished - Error status code: " + str(rez))
         except Exception as ex:
             print(ex)
             print('Error run script')
