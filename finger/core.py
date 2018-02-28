@@ -77,9 +77,9 @@ class StarterPHP(object):
             rez = Popen(self.interpreter + ' ' + file, shell=True, stdout=PIPE, stderr=PIPE)
             print('#' * 20)
             print('Stdout: ')
-            print(rez.stdout.read().encode('utf-8'))
+            print(rez.stdout.read().decode('utf-8'))
             print('Std Error: ')
-            print(rez.stderr.read().encode('utf-8'))
+            print(rez.stderr.read().decode('utf-8'))
             print('#'*20)
             # if rez is 0:
             #     print("Finished - Success")
