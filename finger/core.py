@@ -5,6 +5,8 @@ from shutil import copy2
 import configparser
 from subprocess import Popen, PIPE
 
+from finger.parser_finger import Parser
+
 config = configparser.ConfigParser()
 config.read('config.conf')
 
@@ -93,7 +95,13 @@ if __name__ == '__main__':
     finder = Finder(config.get('Main', 'path_files'))
     runner_php = StarterPHP()
     file_work = FileWorker(args.get('path'))
-    files = finder.search(args.get('rex'), config.get('Main', 'search_files'), sort=True)
+    regexp = args.get('rex')
+    if not regexp:
+        parser = Parser(config.get('Parser', 'items'))
+        parser.parse(args.get('url'))
+        regexp = parser.regexp
+
+    files = finder.search(regexp, config.get('Main', 'search_files'), sort=True)
     for file in files:
         file_work.copy_file(file, args.get('url'))
         current_file = file_work.change_items_in_file(args.get('url'))
