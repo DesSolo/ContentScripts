@@ -5,7 +5,7 @@ from shutil import copy2
 import configparser
 from subprocess import Popen, PIPE
 
-from finger.parser_finger import Parser
+from parser_finger import Parser
 
 config = configparser.ConfigParser()
 config.read('config.conf')
@@ -64,7 +64,7 @@ class FileWorker(object):
         file = self.dst + '/' + 'index.php'
         if os.path.isfile(file):
             with open(file) as r_file:
-                tmp_file = self.rex_url.sub(self.rex_url.search(pattern).group(1), r_file.read())
+                tmp_file = self.rex_url.sub(self.rex_url.search(pattern).group(0), r_file.read())
             with open(file, 'w') as w_file:
                 w_file.write(tmp_file)
             return file
@@ -102,6 +102,8 @@ if __name__ == '__main__':
         regexp = parser.regexp
 
     files = finder.search(regexp, config.get('Main', 'search_files'), sort=True)
+    len_files = len(files)
+    print('Fond files: {}'.format(len_files))
     for file in files:
         file_work.copy_file(file, args.get('url'))
         current_file = file_work.change_items_in_file(args.get('url'))
@@ -110,4 +112,5 @@ if __name__ == '__main__':
                 print('Finished Success!')
                 break
             else:
-                print('No profit...')
+                len_files -= 1
+                print('[{}]/[{}] No profit...'.format(len_files, len(files)))
