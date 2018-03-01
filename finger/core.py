@@ -64,7 +64,7 @@ class FileWorker(object):
         file = self.dst + '/' + 'index.php'
         if os.path.isfile(file):
             with open(file) as r_file:
-                tmp_file = self.rex_url.sub(pattern, r_file.read())
+                tmp_file = self.rex_url.sub(self.rex_url.search(pattern).group(1), r_file.read())
             with open(file, 'w') as w_file:
                 w_file.write(tmp_file)
             return file
