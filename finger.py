@@ -7,7 +7,7 @@ if __name__ == '__main__':
     argpars = argparse.ArgumentParser(prog='finger', usage='%(prog)s [options]', epilog='Finger parser half brain')
     argpars.add_argument('-u', '--url', help='Url target site')
     argpars.add_argument('-r', '--rex', default='', help='Regular expression pattern for search')
-    argpars.add_argument('-p', '--path', default='.', help='Path work')
+    argpars.add_argument('-p', '--path', default='parsers', help='Path work')
 
     args = vars(argpars.parse_args())
 

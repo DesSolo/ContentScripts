@@ -6,7 +6,7 @@ from subprocess import Popen, PIPE
 from pyquery import PyQuery as pq
 
 config = configparser.ConfigParser()
-config.read('config.conf')
+config.read('finger/config.conf')
 
 
 class Parser(object):
