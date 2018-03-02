@@ -1,14 +1,30 @@
 import os
-import argparse
 from re import compile
 from shutil import copy2
 import configparser
 from subprocess import Popen, PIPE
-
-from parser_finger import Parser
+from pyquery import PyQuery as pq
 
 config = configparser.ConfigParser()
 config.read('config.conf')
+
+
+class Parser(object):
+    def __init__(self, pattern):
+        self.pattern = ','.join(['a:contains("{}")'.format(item) for item in pattern.split(';')])
+        self.regexp = None
+
+    def parse(self, url):
+        class_list = []
+        try:
+            soup = pq(url=url)
+            for elem in soup(self.pattern):
+                class_list += (str(pq(elem).attr('class')).split())
+                class_list += (str(pq(elem).parent().attr('class')).split())
+                class_list += (str(pq(elem).parent().parent().attr('class')).split())
+            self.regexp = '|'.join(set(class_list))
+        except Exception as ex:
+            print(ex, 'Parse error!', sep='\n')
 
 
 class Finder(object):
@@ -84,33 +100,3 @@ class StarterPHP(object):
             print('Error run script')
 
 
-if __name__ == '__main__':
-    argpars = argparse.ArgumentParser(prog='finger', usage='%(prog)s [options]', epilog='Finger parser half brain')
-    argpars.add_argument('-u', '--url', help='Url target site')
-    argpars.add_argument('-r', '--rex', default='', help='Regular expression pattern for search')
-    argpars.add_argument('-p', '--path', default='.', help='Path work')
-
-    args = vars(argpars.parse_args())
-
-    finder = Finder(config.get('Main', 'path_files'))
-    runner_php = StarterPHP()
-    file_work = FileWorker(args.get('path'))
-    regexp = args.get('rex')
-    if not regexp:
-        parser = Parser(config.get('Parser', 'items'))
-        parser.parse(args.get('url'))
-        regexp = parser.regexp
-
-    files = finder.search(regexp, config.get('Main', 'search_files'), sort=True)
-    len_files = len(files)
-    print('Fond files: {}'.format(len_files))
-    for file in files:
-        file_work.copy_file(file, args.get('url'))
-        current_file = file_work.change_items_in_file(args.get('url'))
-        if current_file:
-            if runner_php.run(current_file):
-                print('Finished Success!')
-                break
-            else:
-                len_files -= 1
-                print('[{}]/[{}] No profit...'.format(len_files, len(files)))
